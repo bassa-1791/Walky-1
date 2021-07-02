@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
+import kotlinx.coroutines.*
 
 /**
  * 現在地の取得やアクティビティの開始などの指示を統括している
@@ -18,13 +19,14 @@ import com.google.android.gms.maps.model.PointOfInterest
 class MapApplicationService(private val activity: AppCompatActivity) {
     private lateinit var myMap: MyMap
     private lateinit var route: Route
+    private lateinit var gps: GPS
     /**
      * マップの準備ができたら現在地を取得し、GoogleMapを保管する
      *
      * @param mMap OnMapReadyCallbackインターフェースのonMapReadyが受け取る引数
      */
     fun startUp(mMap: GoogleMap) {
-        val gps = GPS(activity)
+        gps = GPS(activity)
         gps.enableCurrentLocation(mMap)
         myMap = MyMap(mMap)
         route = Route(mMap)
@@ -40,19 +42,24 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         // TODO: チェックポイントの位置を取得する
 
         val mMap = myMap.getMyMap()
-        val origin = LatLng(35.1681, 136.8856) // HAL
 
-        val place: MutableList<LatLng> = ArrayList()
-        place.add(LatLng(35.1709, 136.8815)) // 名古屋駅
-        place.add(LatLng(35.1700, 136.8852)) // ミッドランド
-        place.add(LatLng(35.1716, 136.8863)) // ユニモール
+        CoroutineScope(Dispatchers.Main).launch {
+            val origin = gps.getCurrentLocation()
+//            val origin = LatLng(35.1681, 136.8856) // HAL
 
-        mMap.addMarker(MarkerOptions().position(origin))
-        for (j in 0 until place.size) {
-            mMap.addMarker(MarkerOptions().position(place[j]))
+            val place: MutableList<LatLng> = ArrayList()
+            place.add(LatLng(35.1709, 136.8815)) // 名古屋駅
+            place.add(LatLng(35.1700, 136.8852)) // ミッドランド
+            place.add(LatLng(35.1716, 136.8863)) // ユニモール
+
+            mMap.addMarker(MarkerOptions().position(origin))
+            for (j in 0 until place.size) {
+                mMap.addMarker(MarkerOptions().position(place[j]))
+            }
+
+            route.drawRoute(origin, place)
         }
 
-        route.drawRoute(origin, place)
     }
 
     /**

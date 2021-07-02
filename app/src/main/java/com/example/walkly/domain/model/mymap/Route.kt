@@ -23,7 +23,6 @@ class Route(private val mMap: GoogleMap) {
     fun drawRoute(origin: LatLng, place: MutableList<LatLng>) {
 
         // TODO: 正式リリース時に消す
-        // TODO: debug push用
         if (false) {
 
             val path: MutableList<List<LatLng>> = ArrayList()
