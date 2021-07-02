@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1047811409552",
+    "project_id": "walkly-e34e7",
+    "storage_bucket": "walkly-e34e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1047811409552:android:53193ef0af9f64adf1ba15",
+        "android_client_info": {
+          "package_name": "com.example.walky"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1047811409552-c4kfg27p63danvpc49vb5p85tqscu012.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK5XmUeHu611k2Ecp0fey9tTTEQ8UW0cQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1047811409552-c4kfg27p63danvpc49vb5p85tqscu012.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
