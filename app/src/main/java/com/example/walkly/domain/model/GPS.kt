@@ -10,6 +10,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Tasks
 import kotlinx.coroutines.*
 
@@ -43,11 +44,8 @@ class GPS(appActivity: AppCompatActivity) {
      * 現在地を取得する
      */
     @SuppressLint("MissingPermission")
-    fun getCurrentLocation(): LatLng = runBlocking {
-        // TODO: エラーになる時とならない時がある
-        val job = fusedLocationClient.lastLocation
-        val location = job.result
-        return@runBlocking LatLng(location.latitude, location.longitude)
+    fun getCurrentLocation(listener: OnSuccessListener<Location>) {
+        fusedLocationClient.lastLocation.addOnSuccessListener(listener)
     }
 
 }
