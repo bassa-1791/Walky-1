@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.walkly.domain.model.GPS
 import com.example.walkly.domain.model.mymap.MyMap
+import com.example.walkly.ui.Activity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PointOfInterest
@@ -24,6 +25,9 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         val gps = GPS(activity)
         gps.enableCurrentLocation(mMap)
         myMap = MyMap(mMap)
+
+        //後で消す
+        Activity(mMap).startActivity()
     }
 
     /**
