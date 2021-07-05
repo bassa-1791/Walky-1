@@ -39,7 +39,6 @@ class MapApplicationService(private val activity: AppCompatActivity) {
      */
     fun handleActivityButton() {
         // TODO: アクティビティの開始状況により処理を切り替える
-
         val mMap = myMap.getMyMap()
         mMap.clear()
 
