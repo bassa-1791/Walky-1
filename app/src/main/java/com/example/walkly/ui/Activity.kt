@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import org.json.JSONObject
 
 class Activity(private val mMap: GoogleMap) {
+    private val places: MutableList<LatLng> = ArrayList()
 
     fun startActivity(){
     if (true) {
@@ -28,6 +29,7 @@ class Activity(private val mMap: GoogleMap) {
                 //options.snippet("補足情報を記載")
                 val marker = mMap.addMarker(options)
 
+                places.add(LatLng(location.getDouble("lat"), location.getDouble("lng"))) // HAL
             }
         }
         val errorListener = Response.ErrorListener {  }
