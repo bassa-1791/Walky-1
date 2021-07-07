@@ -11,6 +11,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * 現在地の取得やアクティビティの開始などの指示を統括している
@@ -37,24 +40,27 @@ class MapApplicationService(private val activity: AppCompatActivity) {
      * アクティビティの開始
      */
     fun handleActivityButton() {
-        // TODO: 現在地を取得する
-        // TODO: チェックポイントの位置を取得する
         mapActivity.toggleIsActivity()
         val mMap = myMap.getMyMap()
         if (mapActivity.getIsActivity()) {
-            val origin = LatLng(35.1681, 136.8856) // HAL
+            CoroutineScope(Dispatchers.Main).launch {
+                val location = gps.getCurrentLocation()
+                val origin = LatLng(location.latitude, location.longitude)
+//                val origin = LatLng(35.1681, 136.8856) // HAL
 
-            val place: MutableList<LatLng> = ArrayList()
-            place.add(LatLng(35.1709, 136.8815)) // 名古屋駅
-            place.add(LatLng(35.1700, 136.8852)) // ミッドランド
-            place.add(LatLng(35.1716, 136.8863)) // ユニモール
+                // TODO: チェックポイントの位置を取得する
+                val place: MutableList<LatLng> = ArrayList()
+                place.add(LatLng(35.1709, 136.8815)) // 名古屋駅
+                place.add(LatLng(35.1700, 136.8852)) // ミッドランド
+                place.add(LatLng(35.1716, 136.8863)) // ユニモール
 
-            mMap.addMarker(MarkerOptions().position(origin))
-            for (j in 0 until place.size) {
-                mMap.addMarker(MarkerOptions().position(place[j]))
+                mMap.addMarker(MarkerOptions().position(origin))
+                for (j in 0 until place.size) {
+                    mMap.addMarker(MarkerOptions().position(place[j]))
+                }
+
+                route.drawRoute(origin, place)
             }
-
-            route.drawRoute(origin, place)
         } else {
             mMap.clear()
         }
@@ -67,9 +73,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
      * @param point
      */
     fun handlePointClick(point: PointOfInterest) {
-
-        // TODO: アクティビティ中ならtrue
-        if (true) {
+        if (mapActivity.getIsActivity()) {
             myMap.addMarker(point)
         } else {
             Toast.makeText(

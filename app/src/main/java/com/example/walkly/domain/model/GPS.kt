@@ -11,8 +11,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.gms.tasks.Tasks
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.tasks.await
 
 /**
  * GPS利用の許可を求めたり、現在地レイヤーを表示したりする
@@ -44,8 +46,8 @@ class GPS(appActivity: AppCompatActivity) {
      * 現在地を取得する
      */
     @SuppressLint("MissingPermission")
-    fun getCurrentLocation(listener: OnSuccessListener<Location>) {
-        fusedLocationClient.lastLocation.addOnSuccessListener(listener)
+    suspend fun getCurrentLocation(): Location {
+            return fusedLocationClient.lastLocation.await()
     }
 
 }
