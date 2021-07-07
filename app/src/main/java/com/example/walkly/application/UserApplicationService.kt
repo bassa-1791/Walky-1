@@ -1,4 +1,9 @@
 package com.example.walkly.application
 
-class UserApplicationService {
+import android.app.Activity
+import com.example.walkly.SignUpActivity
+
+class UserApplicationService(activity: Activity) {
+
+
 }

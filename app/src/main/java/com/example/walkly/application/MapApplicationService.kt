@@ -3,8 +3,11 @@ package com.example.walkly.application
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.walkly.domain.model.GPS
+import com.example.walkly.domain.model.User
 import com.example.walkly.domain.model.mymap.MyMap
 import com.example.walkly.domain.model.mymap.Route
+import com.example.walkly.domain.repository.IUserRepository
+import com.example.walkly.infrastructure.UserRepository
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -28,6 +31,8 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         gps.enableCurrentLocation(mMap)
         myMap = MyMap(mMap)
         route = Route(mMap)
+
+
     }
 
     /**

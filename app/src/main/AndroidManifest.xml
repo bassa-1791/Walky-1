@@ -39,8 +39,11 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.walkly.SignUpActivity"
+            android:name="com.example.walkly.MapsActivity"
             android:label="@string/title_activity_maps">
+        </activity>
+        <activity android:name=".SignUpActivity">
+
         </activity>
     </application>
 
