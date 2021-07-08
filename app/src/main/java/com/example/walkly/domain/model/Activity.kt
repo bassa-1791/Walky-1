@@ -4,9 +4,13 @@ import com.android.volley.Response
 import com.example.walkly.R
 import com.example.walkly.lib.HTTPRequest
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import org.json.JSONObject
+import kotlin.Exception
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * 目的地のマーカー表示
@@ -15,35 +19,62 @@ class Activity(private val mMap: GoogleMap) {
     private var isActivity: Boolean = false
     private val places: MutableList<LatLng> = ArrayList()
 
-    fun toggleIsActivity(){
+    fun toggleIsActivity() {
         isActivity = !isActivity
     }
+
     fun getIsActivity(): Boolean {
         return isActivity
     }
 
-    fun startActivity(){
-        if (true) {
-            val url = createURLPlacaes(LatLng(35.1681694,136.8857641), "restaurant")
-            val listener = Response.Listener<String> { response ->
-                val jsonResponse = JSONObject(response) // 文字列をJSON形式に変換
-                val results = jsonResponse.getJSONArray("results") // results:配列取得
-                for (i in 0 until results.length()) {
-                    val item = results.getJSONObject(i) // i:オブジェクト取得
-                    val geometry = item.getJSONObject("geometry") // geometry:オブジェクト取得
-                    val location = geometry.getJSONObject("location") // location:オブジェクト取得
+    /**
+     * 周辺施設の位置情報を取得する
+     *
+     * @param origin 現在地
+     * @throws Exception APIキーが間違っているなどのエラー
+     */
+    suspend fun startActivity(origin: LatLng): MutableList<LatLng> {
+        return suspendCoroutine { continuation ->
+            // TODO: debug後で消す
+            if (false) {
+                val url = createURLPlacaes(origin, "restaurant")
+                val listener = Response.Listener<String> { response ->
+                    val jsonResponse = JSONObject(response)
+                    try {
+                        val results = jsonResponse.getJSONArray("results")
+                        for (i in 0 until results.length()) {
+                            val item = results.getJSONObject(i)
+                            val geometry = item.getJSONObject("geometry")
+                            val location = geometry.getJSONObject("location")
 
-                    val options = MarkerOptions()
-                    options.position(LatLng(location.getDouble("lat"), location.getDouble("lng")))
-                    options.title(item.getString("name"))
-                    //options.snippet("補足情報を記載")
-                    val marker = mMap.addMarker(options)
+                            val latLng =
+                                LatLng(location.getDouble("lat"), location.getDouble("lng"))
+                            val options = MarkerOptions()
+                            options.position(latLng)
+                            options.title(item.getString("name"))
+                            options.icon(
+                                BitmapDescriptorFactory.defaultMarker(
+                                    BitmapDescriptorFactory.HUE_BLUE
+                                )
+                            )
+                            mMap.addMarker(options)
 
-                    places.add(LatLng(location.getDouble("lat"), location.getDouble("lng"))) // HAL
+                            places.add(latLng)
+                        }
+                    } catch (e: Exception) {
+                        throw Exception(jsonResponse.getString("error_message"))
+                    } finally {
+                        continuation.resume(places)
+                    }
                 }
+                val errorListener = Response.ErrorListener {
+                    continuation.resume(places)
+                }
+                HTTPRequest().getRequest(url, listener, errorListener)
+            } else {
+                // TODO: debug後で消す
+                continuation.resume(places)
             }
-            val errorListener = Response.ErrorListener {  }
-            HTTPRequest().getRequest(url, listener, errorListener)
         }
     }
 
@@ -53,9 +84,11 @@ class Activity(private val mMap: GoogleMap) {
      * @param origin 現在地
      * @param types 施設種類
      */
-    private fun createURLPlacaes(origin: LatLng, types: String): String{
-        return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=35.1681694,136.8857641&radius=2500&type=restaurant&key=${MyApplication.getContext().getString(
-            R.string.google_maps_key
-        )}"
+    private fun createURLPlacaes(origin: LatLng, types: String): String {
+        return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${origin.latitude},${origin.longitude}&radius=2500&type=${types}&key=${
+            MyApplication.getContext().getString(
+                R.string.google_maps_key
+            )
+        }"
     }
 }

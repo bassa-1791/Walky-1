@@ -9,7 +9,6 @@ import com.example.walkly.domain.model.mymap.Route
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +23,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
     private lateinit var route: Route
     private lateinit var gps: GPS
     private lateinit var mapActivity: Activity // TODO: 名前
+
     /**
      * マップの準備ができたら現在地を取得し、GoogleMapを保管する
      *
@@ -47,20 +47,9 @@ class MapApplicationService(private val activity: AppCompatActivity) {
             CoroutineScope(Dispatchers.Main).launch {
                 val location = gps.getCurrentLocation()
                 val origin = LatLng(location.latitude, location.longitude)
-//                val origin = LatLng(35.1681, 136.8856) // HAL
 
-                // TODO: チェックポイントの位置を取得する
-                val place: MutableList<LatLng> = ArrayList()
-                place.add(LatLng(35.1709, 136.8815)) // 名古屋駅
-                place.add(LatLng(35.1700, 136.8852)) // ミッドランド
-                place.add(LatLng(35.1716, 136.8863)) // ユニモール
-
-                mMap.addMarker(MarkerOptions().position(origin))
-                for (j in 0 until place.size) {
-                    mMap.addMarker(MarkerOptions().position(place[j]))
-                }
-
-                route.drawRoute(origin, place)
+                val places = mapActivity.startActivity(origin)
+                route.drawRoute(origin, places)
             }
         } else {
             mMap.clear()
@@ -90,5 +79,8 @@ class MapApplicationService(private val activity: AppCompatActivity) {
     }
 
     fun handleMarkerClick(marker: Marker) {
+        // TODO: 消す
+        // TODO: MarkerListクラスの修正
+        marker.remove()
     }
 }

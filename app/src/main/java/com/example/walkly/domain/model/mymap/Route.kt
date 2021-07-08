@@ -22,49 +22,43 @@ class Route(private val mMap: GoogleMap) {
      * @param place 中間地点,終点
      * @throws Exception APIキーが間違っているなどのエラー
      */
-    suspend fun drawRoute(origin: LatLng, place: MutableList<LatLng>): Boolean {
+    fun drawRoute(origin: LatLng, place: MutableList<LatLng>) {
 
         // TODO: 正式リリース時に消す
-        return suspendCoroutine { continuation ->
-            if (false) {
-                val path: MutableList<List<LatLng>> = ArrayList()
-                val urlDirections = createURLDirections(origin, place)
+        if (false) {
+            val path: MutableList<List<LatLng>> = ArrayList()
+            val urlDirections = createURLDirections(origin, place)
 
-                val listener = Response.Listener<String> { response ->
-                    val jsonResponse = JSONObject(response)
-                    try {
-                        val routes = jsonResponse.getJSONArray("routes")
-                        val legs = routes.getJSONObject(0).getJSONArray("legs")
+            val listener = Response.Listener<String> { response ->
+                val jsonResponse = JSONObject(response)
+                try {
+                    val routes = jsonResponse.getJSONArray("routes")
+                    val legs = routes.getJSONObject(0).getJSONArray("legs")
 
-                        for (j in 0 until legs.length()) {
+                    for (j in 0 until legs.length()) {
 
-                            val steps = legs.getJSONObject(j).getJSONArray("steps")
-                            for (i in 0 until steps.length()) {
-                                val points =
-                                    steps.getJSONObject(i).getJSONObject("polyline")
-                                        .getString("points")
-                                path.add(PolyUtil.decode(points))
-                            }
-                            for (i in 0 until path.size) {
-                                mMap.addPolyline(
-                                    PolylineOptions().addAll(path[i]).color(Color.BLUE)
-                                )
-                            }
-
+                        val steps = legs.getJSONObject(j).getJSONArray("steps")
+                        for (i in 0 until steps.length()) {
+                            val points =
+                                steps.getJSONObject(i).getJSONObject("polyline")
+                                    .getString("points")
+                            path.add(PolyUtil.decode(points))
+                        }
+                        for (i in 0 until path.size) {
+                            mMap.addPolyline(
+                                PolylineOptions().addAll(path[i]).color(Color.BLUE)
+                            )
                         }
 
-                    } catch (e: Exception) {
-                        throw Exception(jsonResponse.getString("error_message"))
-                    }  finally {
-                        continuation.resume(true)
                     }
-                }
 
-                val errorListener = Response.ErrorListener {
-                    continuation.resume(false)
+                } catch (e: Exception) {
+                    throw Exception(jsonResponse.getString("error_message"))
                 }
-                HTTPRequest().getRequest(urlDirections, listener, errorListener)
             }
+
+            val errorListener = Response.ErrorListener {}
+            HTTPRequest().getRequest(urlDirections, listener, errorListener)
         }
     }
 
@@ -91,7 +85,7 @@ class Route(private val mMap: GoogleMap) {
             for (i in 1 until size - 1) {
                 waypointsParam += "|${points[i].latitude},${points[i].longitude}"
             }
-             pointsParam += "${points[size - 1].latitude},${points[size - 1].longitude}${waypointsParam}"
+            pointsParam += "${points[size - 1].latitude},${points[size - 1].longitude}${waypointsParam}"
         }
 
         return "https://maps.googleapis.com/maps/api/directions/json?mode=walking&${originParam}${pointsParam}&key=${apiKey}"
