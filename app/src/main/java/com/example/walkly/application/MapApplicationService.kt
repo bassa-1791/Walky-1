@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.PointOfInterest
 class MapApplicationService(private val activity: AppCompatActivity) {
     private lateinit var myMap: MyMap
     private lateinit var route: Route
-    private val mapActivity: Activity = Activity() // TODO: 名前
+    private lateinit var mapActivity: Activity // TODO: 名前
     /**
      * マップの準備ができたら現在地を取得し、GoogleMapを保管する
      *
@@ -29,6 +29,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         val gps = GPS(activity)
         gps.enableCurrentLocation(mMap)
         myMap = MyMap(mMap)
+        mapActivity = Activity(mMap)
         route = Route(mMap)
     }
 
