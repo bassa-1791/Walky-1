@@ -1,7 +1,8 @@
 package com.example.walkly.domain.model.user
 
-import java.lang.IllegalArgumentException
-
+/**
+ * ユーザー名
+ */
 class UserName(name: String) {
     companion object {
         const val MIN_LENGTH= 3
@@ -11,11 +12,15 @@ class UserName(name: String) {
 
     init {
         if (name.isEmpty()) {
-            throw IllegalArgumentException("ユーザ名は必ず入力してください。")
+            throw IllegalArgumentException("ユーザ名を入力してください。")
         }
         val length = name.length
         if (length < MIN_LENGTH || length > MAX_LENGTH) {
             throw IllegalArgumentException("ユーザー名は${MIN_LENGTH}文字以上${MAX_LENGTH}文字以下まで入力できます。")
         }
+    }
+
+    fun getValue(): String {
+        return value
     }
 }

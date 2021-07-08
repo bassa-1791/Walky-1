@@ -3,8 +3,11 @@ package com.example.walkly
 
 
 import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.walkly.application.MapApplicationService
+import com.example.walkly.domain.model.MyApplication
 import com.example.walkly.domain.model.user.User
 import com.example.walkly.ui.MapCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -31,11 +34,5 @@ class MapsActivity : AppCompatActivity() {
         button.setOnClickListener {
             mapApplication.handleActivityButton()
         }
-
-
-        // TODO: Userデバッグ
-        User("user", "example@example.com", "password", "password")
-
     }
-
 }
