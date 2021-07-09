@@ -24,9 +24,17 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     }
     override fun onClick(v: View?) {
+
+        try {
+            val user = User("user", "example@example.com", "password", "password", 20, 1)
+            val data = user.getData()
+            print(data.gender) // 男性
+        } catch (e: IllegalArgumentExcception) {
+            println(e.message) // エラーメッセージが表示
+        }
         //あとで消すよ
         val repository: IUserRepository = UserRepository()
-        repository.signUp(AppCompatActivity(), User())
+        repository.signUp(AppCompatActivity(), "username","email","password",1,1)
     }
 
 }
