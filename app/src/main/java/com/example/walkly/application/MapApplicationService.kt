@@ -44,17 +44,17 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         if (mapActivity.getIsActivity()) {
             val origin = LatLng(35.1681, 136.8856) // HAL
 
-            val place: MutableList<LatLng> = ArrayList()
-            place.add(LatLng(35.1709, 136.8815)) // 名古屋駅
-            place.add(LatLng(35.1700, 136.8852)) // ミッドランド
-            place.add(LatLng(35.1716, 136.8863)) // ユニモール
+            val places: MutableList<LatLng> = ArrayList()
+            places.add(LatLng(35.1709, 136.8815)) // 名古屋駅
+            places.add(LatLng(35.1700, 136.8852)) // ミッドランド
+            places.add(LatLng(35.1716, 136.8863)) // ユニモール
 
             mMap.addMarker(MarkerOptions().position(origin))
-            for (j in 0 until place.size) {
-                mMap.addMarker(MarkerOptions().position(place[j]))
+            for (j in 0 until places.size) {
+                mMap.addMarker(MarkerOptions().position(places[j]))
             }
 
-            route.drawRoute(origin, place)
+            route.drawRoute(origin, places)
         } else {
             mMap.clear()
         }
