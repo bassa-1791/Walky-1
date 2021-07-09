@@ -58,4 +58,14 @@ class Activity(private val mMap: GoogleMap) {
             R.string.google_maps_key
         )}"
     }
+
+    /**
+     * ランダムで選択
+     *
+     * @param places
+     */
+    fun randomCheckpoint(places: MutableList<LatLng>): MutableList<LatLng> {
+        val randomPlace = places.shuffled()
+        return randomPlace.take(5).toMutableList()
+    }
 }
