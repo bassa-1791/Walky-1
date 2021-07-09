@@ -41,6 +41,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
      * アクティビティの開始
      */
     fun handleActivityButton() {
+        // TODO: プロセス実行中の判定
         mapActivity.toggleIsActivity()
         val mMap = myMap.getMyMap()
         if (mapActivity.getIsActivity()) {

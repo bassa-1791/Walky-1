@@ -35,8 +35,10 @@ class Activity(private val mMap: GoogleMap) {
      */
     suspend fun startActivity(origin: LatLng): MutableList<LatLng> {
         return suspendCoroutine { continuation ->
+            // TODO: リストの初期化
             // TODO: debug後で消す
-            if (false) {
+            if (true) {
+                places.clear()
                 val url = createURLPlacaes(origin, "restaurant")
                 val listener = Response.Listener<String> { response ->
                     val jsonResponse = JSONObject(response)
@@ -49,22 +51,24 @@ class Activity(private val mMap: GoogleMap) {
 
                             val latLng =
                                 LatLng(location.getDouble("lat"), location.getDouble("lng"))
+                            places.add(latLng)
+                        }
+                    } catch (e: Exception) {
+                        throw Exception(jsonResponse.getString("error_message"))
+                    } finally {
+                        val random = randomCheckpoint(places)
+                        for (item in random) {
                             val options = MarkerOptions()
-                            options.position(latLng)
-                            options.title(item.getString("name"))
+                            options.position(item)
+                            options.title("やばい")
                             options.icon(
                                 BitmapDescriptorFactory.defaultMarker(
                                     BitmapDescriptorFactory.HUE_BLUE
                                 )
                             )
                             mMap.addMarker(options)
-
-                            places.add(latLng)
                         }
-                    } catch (e: Exception) {
-                        throw Exception(jsonResponse.getString("error_message"))
-                    } finally {
-                        continuation.resume(places)
+                        continuation.resume(random)
                     }
                 }
                 val errorListener = Response.ErrorListener {
@@ -85,10 +89,21 @@ class Activity(private val mMap: GoogleMap) {
      * @param types 施設種類
      */
     private fun createURLPlacaes(origin: LatLng, types: String): String {
+        // TODO: タイプをランダムにする?
         return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${origin.latitude},${origin.longitude}&radius=2500&type=${types}&key=${
             MyApplication.getContext().getString(
                 R.string.google_maps_key
             )
         }"
+    }
+
+    /**
+     * ランダムで選択
+     *
+     * @param places
+     */
+    fun randomCheckpoint(places: MutableList<LatLng>): MutableList<LatLng> {
+        val randomPlace = places.shuffled()
+        return randomPlace.take(5).toMutableList()
     }
 }

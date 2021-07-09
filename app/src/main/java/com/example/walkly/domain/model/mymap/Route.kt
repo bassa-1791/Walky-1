@@ -25,7 +25,7 @@ class Route(private val mMap: GoogleMap) {
     fun drawRoute(origin: LatLng, place: MutableList<LatLng>) {
 
         // TODO: 正式リリース時に消す
-        if (false) {
+        if (true) {
             val path: MutableList<List<LatLng>> = ArrayList()
             val urlDirections = createURLDirections(origin, place)
 
