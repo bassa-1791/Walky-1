@@ -63,7 +63,7 @@ open class Weather() {
             if (weathericon == "") {
                 iconurl = "[画像データなし].png"
             }else {
-                iconurl = weathericon + ".png"
+                iconurl = "http://openweathermap.org/img/wn/" + weathericon + "@2x.png"
             }
 
             println(iconurl)
@@ -78,6 +78,9 @@ open class Weather() {
 
     }
 
+    fun createicon(){
+
+    }
+
 
 }
-
