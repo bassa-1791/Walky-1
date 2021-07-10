@@ -1,17 +1,19 @@
 package com.example.walkly.application
 
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.walkly.domain.model.Activity
 import com.example.walkly.domain.model.GPS
+import com.example.walkly.domain.model.Place
+import com.example.walkly.domain.model.Route
 import com.example.walkly.domain.model.mymap.MyMap
-import com.example.walkly.domain.model.mymap.Route
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PointOfInterest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -22,7 +24,9 @@ class MapApplicationService(private val activity: AppCompatActivity) {
     private lateinit var myMap: MyMap
     private lateinit var route: Route
     private lateinit var gps: GPS
-    private lateinit var mapActivity: Activity // TODO: 名前
+    private lateinit var place: Place // TODO: 名前
+    private var isActivity: Boolean = false
+    private var isProcess: Boolean = false
 
     /**
      * マップの準備ができたら現在地を取得し、GoogleMapを保管する
@@ -33,7 +37,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         gps = GPS(activity)
         gps.enableCurrentLocation(mMap)
         myMap = MyMap(mMap)
-        mapActivity = Activity(mMap)
+        place = Place(mMap)
         route = Route(mMap)
     }
 
@@ -41,30 +45,41 @@ class MapApplicationService(private val activity: AppCompatActivity) {
      * アクティビティの開始
      */
     fun handleActivityButton() {
-        // TODO: プロセス実行中の判定
-        mapActivity.toggleIsActivity()
+        // TODO: クリック間隔による制限を追加する?
+        if (isProcess) {
+            AlertDialog.Builder(activity)
+                .setTitle("処理中")
+                .setMessage("しばらくお待ちください。")
+                .setPositiveButton("OK") { _, which -> }
+                .show()
+            return
+        }
+        isProcess = true
+        isActivity = !isActivity
         val mMap = myMap.getMyMap()
-        if (mapActivity.getIsActivity()) {
-            CoroutineScope(Dispatchers.Main).launch {
+
+        CoroutineScope(Dispatchers.Main).launch {
+            if (isActivity) {
                 val location = gps.getCurrentLocation()
                 val origin = LatLng(location.latitude, location.longitude)
 
-                val places = mapActivity.startActivity(origin)
+                val places = place.pickCheckpoint(origin)
                 route.drawRoute(origin, places)
+            } else {
+                mMap.clear()
             }
-        } else {
-            mMap.clear()
+            isProcess = false
         }
     }
 
     /**
-     * アクティビティを実行中ならマーカーを設置して、保存する(削除やルート用)
+     * アクティビティを実行中ならマーカーを設置して、保存する(削除用)
      * そうでなければ情報ウインドウを設置する
      *
      * @param point
      */
     fun handlePointClick(point: PointOfInterest) {
-        if (mapActivity.getIsActivity()) {
+        if (isActivity) {
             myMap.addMarker(point)
         } else {
             Toast.makeText(
@@ -80,8 +95,8 @@ class MapApplicationService(private val activity: AppCompatActivity) {
     }
 
     fun handleMarkerClick(marker: Marker) {
-        // TODO: 消す
+        // TODO: チェックポイントも消えてしまう
         // TODO: MarkerListクラスの修正
-        marker.remove()
+//        marker.remove()
     }
 }

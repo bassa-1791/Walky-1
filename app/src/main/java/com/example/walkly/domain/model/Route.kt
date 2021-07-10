@@ -1,17 +1,14 @@
-package com.example.walkly.domain.model.mymap
+package com.example.walkly.domain.model
 
 import android.graphics.Color
 import com.android.volley.Response
 import com.example.walkly.R
-import com.example.walkly.domain.model.MyApplication
 import com.example.walkly.lib.HTTPRequest
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.PolyUtil
 import org.json.JSONObject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class Route(private val mMap: GoogleMap) {
 
