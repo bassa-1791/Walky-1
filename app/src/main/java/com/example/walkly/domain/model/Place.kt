@@ -79,6 +79,10 @@ class Place(private val mMap: GoogleMap) {
                 HTTPRequest().getRequest(url, listener, errorListener)
             } else {
                 // TODO: 本番時には消す
+                places.clear()
+                places.add(LatLng(35.1709, 136.8815)) // 名古屋駅
+                places.add(LatLng(35.1700, 136.8852)) // ミッドランド
+                places.add(LatLng(35.1716, 136.8863)) // ユニモール
                 continuation.resume(places)
             }
         }

@@ -10,7 +10,10 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.PolyUtil
 import org.json.JSONObject
 
-class Route(private val mMap: GoogleMap) {
+/**
+ * 現在地からチェックポイントまでの経路を引く
+ */
+class Directions(private val mMap: GoogleMap) {
 
     /**
      * 経路を引く
@@ -21,7 +24,8 @@ class Route(private val mMap: GoogleMap) {
      */
     fun drawRoute(origin: LatLng, place: MutableList<LatLng>) {
 
-        // TODO: 正式リリース時に消す
+        // TODO: リファクタリング
+        // TODO: 正式リリース時に消す & リリースビルド時にtrueになることを確認する
         if (true) {
             val path: MutableList<List<LatLng>> = ArrayList()
             val urlDirections = createURLDirections(origin, place)

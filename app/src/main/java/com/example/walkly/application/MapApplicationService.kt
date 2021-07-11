@@ -5,7 +5,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.walkly.domain.model.GPS
 import com.example.walkly.domain.model.Place
-import com.example.walkly.domain.model.Route
+import com.example.walkly.domain.model.Directions
 import com.example.walkly.domain.model.mymap.MyMap
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
@@ -13,7 +13,6 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PointOfInterest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -22,9 +21,10 @@ import kotlinx.coroutines.launch
 
 class MapApplicationService(private val activity: AppCompatActivity) {
     private lateinit var myMap: MyMap
-    private lateinit var route: Route
+    private lateinit var directions: Directions
     private lateinit var gps: GPS
-    private lateinit var place: Place // TODO: 名前
+    private lateinit var place: Place
+    private var lastTimeMillis: Long = 0
     private var isActivity: Boolean = false
     private var isProcess: Boolean = false
 
@@ -36,21 +36,35 @@ class MapApplicationService(private val activity: AppCompatActivity) {
     fun startUp(mMap: GoogleMap) {
         gps = GPS(activity)
         gps.enableCurrentLocation(mMap)
+
+        // TODO: ＧoogleMapのグローバルオブジェクト化検討
         myMap = MyMap(mMap)
         place = Place(mMap)
-        route = Route(mMap)
+        directions = Directions(mMap)
     }
 
     /**
      * アクティビティの開始
      */
     fun handleActivityButton() {
-        // TODO: クリック間隔による制限を追加する?
         if (isProcess) {
             AlertDialog.Builder(activity)
                 .setTitle("処理中")
                 .setMessage("しばらくお待ちください。")
-                .setPositiveButton("OK") { _, which -> }
+                .setPositiveButton("OK") { _, _ -> }
+                .show()
+            return
+        }
+        val currentMillis = System.currentTimeMillis()
+        val timeDiff = (currentMillis - lastTimeMillis) / 1000L
+        if (!isActivity && timeDiff <= 60) {
+            /**
+             * アクティビティを開始しようとしている かつ 前回のアクティビティからN秒以内
+             */
+            AlertDialog.Builder(activity)
+                .setTitle("適度に休憩を")
+                .setMessage("適度に休憩しましょう。")
+                .setPositiveButton("OK") {_, _ ->}
                 .show()
             return
         }
@@ -64,9 +78,10 @@ class MapApplicationService(private val activity: AppCompatActivity) {
                 val origin = LatLng(location.latitude, location.longitude)
 
                 val places = place.pickCheckpoint(origin)
-                route.drawRoute(origin, places)
+                directions.drawRoute(origin, places)
             } else {
                 mMap.clear()
+                lastTimeMillis = currentMillis
             }
             isProcess = false
         }
@@ -95,8 +110,8 @@ class MapApplicationService(private val activity: AppCompatActivity) {
     }
 
     fun handleMarkerClick(marker: Marker) {
-        // TODO: チェックポイントも消えてしまう
-        // TODO: MarkerListクラスの修正
-//        marker.remove()
+        // TODO: MarkerListクラスのリファクタリング
+        // TODO: アラートの検討
+        myMap.deleteMarker(marker)
     }
 }
