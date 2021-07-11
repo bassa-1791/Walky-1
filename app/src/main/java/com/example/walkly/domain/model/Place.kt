@@ -62,7 +62,7 @@ class Place(private val mMap: GoogleMap) {
 
                             val options = MarkerOptions()
                             options.position(latLng)
-                            options.title(item.getString("name"))
+                            options.title("[checkpoint]"+ item.getString("name"))
                             options.icon(
                                 BitmapDescriptorFactory.defaultMarker(
                                     BitmapDescriptorFactory.HUE_GREEN
@@ -95,7 +95,7 @@ class Place(private val mMap: GoogleMap) {
      * @return String API URL
      */
     private fun createURL(origin: LatLng): String {
-        return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${origin.latitude},${origin.longitude}&radius=${PLACE_RADIUS}${createRandomType()}&key=${
+        return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?language=ja&location=${origin.latitude},${origin.longitude}&radius=${PLACE_RADIUS}${createRandomType()}&key=${
             MyApplication.getContext().getString(
                 R.string.google_maps_key
             )
