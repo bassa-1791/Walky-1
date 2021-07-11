@@ -2,6 +2,7 @@ package com.example.walkly.domain.model
 
 import android.graphics.Color
 import com.android.volley.Response
+import com.example.walkly.BuildConfig
 import com.example.walkly.R
 import com.example.walkly.lib.HTTPRequest
 import com.google.android.gms.maps.GoogleMap
@@ -14,6 +15,9 @@ import org.json.JSONObject
  * 現在地からチェックポイントまでの経路を引く
  */
 class Directions(private val mMap: GoogleMap) {
+    companion object {
+        const val DEBUG_MODE = true // TODO: 本番時には消す
+    }
 
     /**
      * 経路を引く
@@ -26,7 +30,7 @@ class Directions(private val mMap: GoogleMap) {
 
         // TODO: リファクタリング
         // TODO: 正式リリース時に消す & リリースビルド時にtrueになることを確認する
-        if (true) {
+        if (!BuildConfig.DEBUG || DEBUG_MODE) {
             val path: MutableList<List<LatLng>> = ArrayList()
             val urlDirections = createURLDirections(origin, place)
 
