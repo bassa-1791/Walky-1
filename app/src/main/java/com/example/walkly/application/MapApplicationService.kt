@@ -64,7 +64,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
             AlertDialog.Builder(activity)
                 .setTitle("適度に休憩を")
                 .setMessage("適度に休憩しましょう。")
-                .setPositiveButton("OK") {_, _ ->}
+                .setPositiveButton("OK") { _, _ -> }
                 .show()
             return
         }

@@ -12,11 +12,12 @@ import com.google.android.gms.maps.model.PointOfInterest
  * Map準備完了時,マーカークリック時などの処理を定義しているクラス
  */
 
-class MapCallback(private val mapApplication: MapApplicationService): OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnPoiClickListener {
+class MapCallback(private val mapApplication: MapApplicationService) : OnMapReadyCallback,
+    GoogleMap.OnMarkerClickListener, GoogleMap.OnPoiClickListener {
 
     /**
      * OnMapReadyCallbackインターフェースからの継承
-     * 準備ができたらGoogleMapを受け取り、アプリケーション立ち上げ
+     * 準備ができたらGoogleMapクラスを受け取り、アプリケーション立ち上げ
      *
      * @param googleMap GoogleMap SDK のメインクラス
      */
@@ -31,6 +32,8 @@ class MapCallback(private val mapApplication: MapApplicationService): OnMapReady
     /**
      * Google.OnPoiClickListenerからの継承
      * スポットがクリックされた時に実行される
+     *
+     * @param point クリックされたスポットの情報
      */
     override fun onPoiClick(point: PointOfInterest) {
         mapApplication.handlePointClick(point)
@@ -39,6 +42,9 @@ class MapCallback(private val mapApplication: MapApplicationService): OnMapReady
     /**
      * GoogleMap.OnMakerClickListenerインターフェースからの継承
      * マーカーをクリックかタップした時に実行される
+     *
+     * @param
+     * @return false
      */
     override fun onMarkerClick(marker: Marker): Boolean {
         mapApplication.handleMarkerClick(marker)
