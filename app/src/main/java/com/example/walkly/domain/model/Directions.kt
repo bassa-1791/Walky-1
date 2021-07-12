@@ -51,7 +51,7 @@ class Directions(private val mMap: GoogleMap) {
                         }
                         for (i in 0 until path.size) {
                             mMap.addPolyline(
-                                PolylineOptions().addAll(path[i]).color(Color.BLUE)
+                                PolylineOptions().addAll(path[i]).color(Color.argb(100, 0, 0, 255))
                             )
                         }
 

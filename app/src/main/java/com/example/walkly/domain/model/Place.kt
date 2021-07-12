@@ -9,7 +9,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import org.json.JSONObject
+import java.util.Random
 import kotlin.Exception
+import kotlin.collections.ArrayList
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -64,9 +66,7 @@ class Place(private val mMap: GoogleMap) {
                             options.position(latLng)
                             options.title("[checkpoint]"+ item.getString("name"))
                             options.icon(
-                                BitmapDescriptorFactory.defaultMarker(
-                                    BitmapDescriptorFactory.HUE_GREEN
-                                )
+                                BitmapDescriptorFactory.defaultMarker(160F)
                             )
                             mMap.addMarker(options)
                         }
@@ -95,7 +95,7 @@ class Place(private val mMap: GoogleMap) {
      * @return String API URL
      */
     private fun createURL(origin: LatLng): String {
-        return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?language=ja&location=${origin.latitude},${origin.longitude}&radius=${PLACE_RADIUS}${createRandomType()}&key=${
+        return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?language=ja&location=${origin.latitude},${origin.longitude}&radius=${PLACE_RADIUS}&type=${createRandomType()}&key=${
             MyApplication.getContext().getString(
                 R.string.google_maps_key
             )
@@ -109,9 +109,9 @@ class Place(private val mMap: GoogleMap) {
      * @return String 施設タイプ
      */
     private fun createRandomType(): String {
-        // TODO: 候補からランダムに選択
-        val type = "&type="
-        return type + "restaurant"
+        val list: List<String> = listOf("restaurant", "bakery", "cafe", "museum", "park", "place_of_worship", "spa")
+        val randomIndex = Random().nextInt(list.size)
+        return list[randomIndex]
     }
 
     /**
