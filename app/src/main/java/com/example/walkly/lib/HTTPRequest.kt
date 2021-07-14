@@ -3,7 +3,6 @@ package com.example.walkly.lib
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.walkly.domain.model.MyApplication
 
 /**
  *  HTTPリクエストを送る

@@ -4,6 +4,7 @@ import com.android.volley.Response
 import com.example.walkly.BuildConfig
 import com.example.walkly.R
 import com.example.walkly.lib.HTTPRequest
+import com.example.walkly.lib.MyApplication
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng

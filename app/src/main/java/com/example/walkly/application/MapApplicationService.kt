@@ -7,6 +7,7 @@ import com.example.walkly.domain.model.GPS
 import com.example.walkly.domain.model.Place
 import com.example.walkly.domain.model.Directions
 import com.example.walkly.domain.model.mymap.MyMap
+import com.example.walkly.lib.MyApplication
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -20,13 +21,13 @@ import kotlinx.coroutines.launch
  */
 
 class MapApplicationService(private val activity: AppCompatActivity) {
+    private var lastTimeMillis: Long = 0
+    private var isActivity: Boolean = false
+    private var isProcess: Boolean = false
     private lateinit var myMap: MyMap
     private lateinit var directions: Directions
     private lateinit var gps: GPS
     private lateinit var place: Place
-    private var lastTimeMillis: Long = 0
-    private var isActivity: Boolean = false
-    private var isProcess: Boolean = false
 
     /**
      * マップの準備ができたら現在地を取得し、GoogleMapを保管する
@@ -98,7 +99,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
             myMap.addMarker(point)
         } else {
             Toast.makeText(
-                activity,
+                MyApplication.getContext(),
                 """
             ${point.name}
             緯度:${point.latLng.latitude}

@@ -1,4 +1,4 @@
-package com.example.walkly.domain.model
+package com.example.walkly.lib
 
 import android.annotation.SuppressLint
 import android.app.Application

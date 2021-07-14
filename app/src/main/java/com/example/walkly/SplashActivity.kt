@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashActivity : AppCompatActivity() {
-    private val permission: Permission = Permission(this)
+    private val permission: Permission = Permission()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +26,7 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             } else {
                 permission.requestPermission(
+                    this@SplashActivity,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     R.integer.location_request_code
                 )
