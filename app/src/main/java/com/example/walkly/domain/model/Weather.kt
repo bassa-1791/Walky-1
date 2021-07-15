@@ -7,15 +7,17 @@ package com.example.walkly.domain.model
 
 
 import android.util.Log
+import android.widget.ImageView
 import com.android.volley.Response
 import com.example.walkly.lib.HTTPRequest
 import com.google.android.gms.maps.model.LatLng
+import com.squareup.picasso.Picasso
 import org.json.JSONObject
+import androidx.appcompat.app.AppCompatActivity
+import com.example.walkly.R
 
 
-
-
-open class Weather() {
+class Weather(private val activity: AppCompatActivity) {
 
     public fun start(latLng: LatLng) {
         println("処理を開始")
@@ -61,12 +63,17 @@ open class Weather() {
             var iconurl : String
 
             if (weathericon == "") {
-                iconurl = "[画像データなし].png"
+                iconurl = ""
             }else {
                 iconurl = "http://openweathermap.org/img/wn/" + weathericon + "@2x.png"
             }
 
-            println(iconurl)
+            Picasso.get()
+                //いらすとやの画像URL
+                .load(iconurl)
+                .resize(300, 300) //表示サイズ指定
+                .centerCrop() //resizeで指定した範囲になるよう中央から切り出し
+                .into(activity.findViewById<ImageView>(R.id.imageView)) //imageViewに流し込み
         }
 
         /*HTTPRequest03*/
@@ -74,13 +81,11 @@ open class Weather() {
 
         HTTPRequest().getRequest(url, listener, errorListener)
 
-
-
     }
 
     fun createicon(){
 
     }
 
-
 }
+

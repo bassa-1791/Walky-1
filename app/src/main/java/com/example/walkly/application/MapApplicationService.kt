@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.walkly.domain.model.Activity
 import com.example.walkly.domain.model.GPS
+import com.example.walkly.domain.model.Weather
 import com.example.walkly.domain.model.mymap.MyMap
 import com.example.walkly.domain.model.mymap.Route
 import com.google.android.gms.maps.GoogleMap
@@ -31,6 +32,11 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         myMap = MyMap(mMap)
         mapActivity = Activity(mMap)
         route = Route(mMap)
+
+
+
+        // TODO: 現在地の取得
+        Weather(activity).start(LatLng(35.1681, 136.8856))
     }
 
     /**
