@@ -28,7 +28,7 @@ class Place(private val mMap: GoogleMap) {
     private val places: MutableList<LatLng> = ArrayList()
 
     /**
-     * 周辺施設の位置情報を取得する
+     * 同期的に周辺施設の位置情報を取得する
      *
      * @param origin 現在地
      * @throws Exception APIキーが間違っているなどのエラー

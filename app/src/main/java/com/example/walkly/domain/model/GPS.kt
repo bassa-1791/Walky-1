@@ -40,7 +40,7 @@ class GPS(private val activity: AppCompatActivity) {
     }
 
     /**
-     * 現在地を取得する
+     * 同期的に現在地を取得する
      */
     @SuppressLint("MissingPermission")
     suspend fun getCurrentLocation(): Location {

@@ -21,7 +21,10 @@ import kotlinx.coroutines.launch
  */
 
 class MapApplicationService(private val activity: AppCompatActivity) {
-    private var lastTimeMillis: Long = 0
+    companion object {
+        const val ACTIVITY_INTERVAL = 60
+    }
+    private var previousTimeMillis: Long = 0
     private var isActivity: Boolean = false
     private var isProcess: Boolean = false
     private lateinit var myMap: MyMap
@@ -57,10 +60,10 @@ class MapApplicationService(private val activity: AppCompatActivity) {
             return
         }
         val currentMillis = System.currentTimeMillis()
-        val timeDiff = (currentMillis - lastTimeMillis) / 1000L
-        if (!isActivity && timeDiff <= 60) {
+        val timeDiff = (currentMillis - previousTimeMillis) / 1000L
+        if (!isActivity && timeDiff <= ACTIVITY_INTERVAL) {
             /**
-             * アクティビティを開始しようとしている かつ 前回のアクティビティからN秒以内
+             * アクティビティ中ではない(アクティビティを開始しようとしている) かつ 前回のアクティビティからN秒以内
              */
             AlertDialog.Builder(activity)
                 .setTitle("適度に休憩を")
@@ -82,7 +85,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
                 directions.drawRoute(origin, places)
             } else {
                 mMap.clear()
-                lastTimeMillis = currentMillis
+                previousTimeMillis = currentMillis
             }
             isProcess = false
         }
