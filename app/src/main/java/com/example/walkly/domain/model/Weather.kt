@@ -63,13 +63,12 @@ class Weather(private val activity: AppCompatActivity) {
             var iconurl : String
 
             if (weathericon == "") {
-                iconurl = ""
+                iconurl = "https://tsukatte.com/wp-content/uploads/2019/01/mark_kinshi.png"
             }else {
                 iconurl = "http://openweathermap.org/img/wn/" + weathericon + "@2x.png"
             }
 
             Picasso.get()
-                //いらすとやの画像URL
                 .load(iconurl)
                 .resize(300, 300) //表示サイズ指定
                 .centerCrop() //resizeで指定した範囲になるよう中央から切り出し
