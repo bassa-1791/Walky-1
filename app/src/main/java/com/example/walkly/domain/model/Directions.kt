@@ -5,6 +5,7 @@ import com.android.volley.Response
 import com.example.walkly.BuildConfig
 import com.example.walkly.R
 import com.example.walkly.lib.HTTPRequest
+import com.example.walkly.lib.MyApplication
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
@@ -27,38 +28,33 @@ class Directions(private val mMap: GoogleMap) {
      * @throws Exception APIキーが間違っているなどのエラー
      */
     fun drawRoute(origin: LatLng, place: MutableList<LatLng>) {
-
-        // TODO: リファクタリング
         // TODO: 正式リリース時に消す & リリースビルド時にtrueになることを確認する
         if (!BuildConfig.DEBUG || DEBUG_MODE) {
-            val path: MutableList<List<LatLng>> = ArrayList()
             val urlDirections = createURLDirections(origin, place)
 
             val listener = Response.Listener<String> { response ->
                 val jsonResponse = JSONObject(response)
-                try {
-                    val routes = jsonResponse.getJSONArray("routes")
-                    val legs = routes.getJSONObject(0).getJSONArray("legs")
-
-                    for (j in 0 until legs.length()) {
-
-                        val steps = legs.getJSONObject(j).getJSONArray("steps")
-                        for (i in 0 until steps.length()) {
-                            val points =
-                                steps.getJSONObject(i).getJSONObject("polyline")
-                                    .getString("points")
-                            path.add(PolyUtil.decode(points))
-                        }
-                        for (i in 0 until path.size) {
-                            mMap.addPolyline(
-                                PolylineOptions().addAll(path[i]).color(Color.argb(100, 0, 0, 255))
-                            )
-                        }
-
-                    }
-
-                } catch (e: Exception) {
+                if (jsonResponse.getString("status") != "OK") {
                     throw Exception(jsonResponse.getString("error_message"))
+                }
+
+                val path: MutableList<List<LatLng>> = ArrayList()
+                val routes = jsonResponse.getJSONArray("routes")
+                val legs = routes.getJSONObject(0).getJSONArray("legs")
+
+                for (j in 0 until legs.length()) {
+                    val steps = legs.getJSONObject(j).getJSONArray("steps")
+                    for (i in 0 until steps.length()) {
+                        val points =
+                            steps.getJSONObject(i).getJSONObject("polyline")
+                                .getString("points")
+                        path.add(PolyUtil.decode(points))
+                    }
+                    for (i in 0 until path.size) {
+                        mMap.addPolyline(
+                            PolylineOptions().addAll(path[i]).color(Color.argb(100, 0, 0, 255))
+                        )
+                    }
                 }
             }
 

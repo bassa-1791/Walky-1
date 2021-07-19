@@ -11,7 +11,6 @@ import com.google.android.gms.maps.model.PointOfInterest
 class MyMap(private val mMap: GoogleMap) {
     private val markerList: MarkerList = MarkerList()
 
-    // TODO: 後で消す
     fun getMyMap(): GoogleMap {
         return mMap
     }

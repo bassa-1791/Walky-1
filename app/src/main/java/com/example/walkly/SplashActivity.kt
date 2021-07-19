@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashActivity : AppCompatActivity() {
-    private val permission: Permission = Permission(this)
+    private val permission: Permission = Permission()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,13 +25,17 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } else {
-                permission.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.integer.location_request_code)
+                permission.requestPermission(
+                    this@SplashActivity,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    R.integer.location_request_code
+                )
             }
         }
     }
 
     /**
-     * リクエストコードが1なら、GPSパーミッションのコールバックメソッドを実行する
+     * リクエストコードがR.integer.location_request_codeなら、GPSパーミッションのコールバックメソッドを実行する
      */
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -43,9 +47,9 @@ class SplashActivity : AppCompatActivity() {
         if (requestCode == R.integer.location_request_code) {
             permissionCallback.onLocationResultCallback()
         }
+
         val intent = Intent(this@SplashActivity, MapsActivity::class.java)
         startActivity(intent)
         finish()
-
     }
 }
