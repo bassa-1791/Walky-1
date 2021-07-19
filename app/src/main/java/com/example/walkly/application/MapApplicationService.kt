@@ -11,6 +11,7 @@ import com.example.walkly.lib.MyApplication
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,6 @@ class MapApplicationService(private val activity: AppCompatActivity) {
     private var previousTimeMillis: Long = 0
     private var isActivity: Boolean = false
     private var isProcess: Boolean = false
-    private lateinit var myMap: MyMap
     private lateinit var directions: Directions
     private lateinit var gps: GPS
     private lateinit var place: Place
@@ -41,10 +41,15 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         gps = GPS(activity)
         gps.enableCurrentLocation(mMap)
 
-        // TODO: ＧoogleMapのグローバルオブジェクト化検討
-        myMap = MyMap(mMap)
-        place = Place(mMap)
-        directions = Directions(mMap)
+        val myMap = MyMap(mMap)
+        place = Place()
+        directions = Directions()
+
+        // TODO: MyMap()、getMyMap()を使用している箇所の修正
+        val option = MarkerOptions()
+        option.position(LatLng(35.1709, 136.8815))
+        MyApplication.setMap(myMap)
+        MyApplication.getMap().addMarker(option)
     }
 
     /**
@@ -74,7 +79,6 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         }
         isProcess = true
         isActivity = !isActivity
-        val mMap = myMap.getMyMap()
 
         CoroutineScope(Dispatchers.Main).launch {
             if (isActivity) {
@@ -84,7 +88,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
                 val places = place.pickCheckpoint(origin)
                 directions.drawRoute(origin, places)
             } else {
-                mMap.clear()
+                MyApplication.getMap().clear()
                 previousTimeMillis = currentMillis
             }
             isProcess = false
@@ -99,7 +103,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
      */
     fun handlePointClick(point: PointOfInterest) {
         if (isActivity) {
-            myMap.addMarker(point)
+            MyApplication.getMap().addMarker(point)
         } else {
             Toast.makeText(
                 MyApplication.getContext(),
@@ -116,6 +120,6 @@ class MapApplicationService(private val activity: AppCompatActivity) {
     fun handleMarkerClick(marker: Marker) {
         // TODO: MarkerListクラスのリファクタリング
         // TODO: アラートの検討
-        myMap.deleteMarker(marker)
+        MyApplication.getMap().deleteMarker(marker)
     }
 }

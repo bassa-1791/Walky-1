@@ -6,7 +6,6 @@ import com.example.walkly.BuildConfig
 import com.example.walkly.R
 import com.example.walkly.lib.HTTPRequest
 import com.example.walkly.lib.MyApplication
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.PolyUtil
@@ -15,7 +14,7 @@ import org.json.JSONObject
 /**
  * 現在地からチェックポイントまでの経路を引く
  */
-class Directions(private val mMap: GoogleMap) {
+class Directions {
     companion object {
         const val DEBUG_MODE = true // TODO: 本番時には消す
     }
@@ -51,7 +50,7 @@ class Directions(private val mMap: GoogleMap) {
                         path.add(PolyUtil.decode(points))
                     }
                     for (i in 0 until path.size) {
-                        mMap.addPolyline(
+                        MyApplication.getMap().addPolyline(
                             PolylineOptions().addAll(path[i]).color(Color.argb(100, 0, 0, 255))
                         )
                     }

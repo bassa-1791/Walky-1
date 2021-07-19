@@ -5,7 +5,6 @@ import com.example.walkly.BuildConfig
 import com.example.walkly.R
 import com.example.walkly.lib.HTTPRequest
 import com.example.walkly.lib.MyApplication
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -19,7 +18,7 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * 周辺施設を取得する
  */
-class Place(private val mMap: GoogleMap) {
+class Place {
     companion object {
         const val PLACE_RADIUS = 2500
         const val MAX_CHECKPOINT = 5
@@ -69,7 +68,7 @@ class Place(private val mMap: GoogleMap) {
                             options.icon(
                                 BitmapDescriptorFactory.defaultMarker(160F)
                             )
-                            mMap.addMarker(options)
+                            MyApplication.getMap().addMarker(options)
                         }
                     }
                     continuation.resume(places)
