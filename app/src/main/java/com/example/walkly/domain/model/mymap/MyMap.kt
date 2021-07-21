@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.PolylineOptions
  * 様々な処理に必要なGoogleMapクラスを管理している
  */
 class MyMap(private val mMap: GoogleMap) {
-    private var markerList: MarkerList = MarkerList()
+    private var manualCheckPoint: ManualCheckPoint = ManualCheckPoint()
 
     /**
      * チェックポイントとなるマーカーを設置する
@@ -18,12 +18,15 @@ class MyMap(private val mMap: GoogleMap) {
      * @param point
      */
     fun addMarker(point: PointOfInterest) {
-        if (!markerList.checkDuplicate(point.name)) {
+        val name = point.name
+        if (!manualCheckPoint.checkDuplicate(name)) {
             val markerOptions = MarkerOptions().position(point.latLng)
-            markerOptions.title(point.name)
-            val marker = mMap.addMarker(markerOptions)
+            markerOptions.title(name)
+            val marker = addMarker(markerOptions)
 
-            markerList.add(marker)
+            if (marker != null) {
+                manualCheckPoint.add(marker)
+            }
         }
     }
 
@@ -32,8 +35,8 @@ class MyMap(private val mMap: GoogleMap) {
      *
      * @param option
      */
-    fun addMarker(option: MarkerOptions) {
-        mMap.addMarker(option)
+    fun addMarker(option: MarkerOptions): Marker? {
+        return mMap.addMarker(option)
     }
 
     /**
@@ -42,7 +45,7 @@ class MyMap(private val mMap: GoogleMap) {
      * @param marker
      */
     fun deleteMarker(marker: Marker) {
-        markerList.delete(marker)
+        manualCheckPoint.delete(marker)
     }
 
     /**
@@ -59,6 +62,6 @@ class MyMap(private val mMap: GoogleMap) {
      */
     fun clear() {
         mMap.clear()
-        markerList = MarkerList()
+        manualCheckPoint = ManualCheckPoint()
     }
 }

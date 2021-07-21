@@ -4,9 +4,11 @@ import com.google.android.gms.maps.model.Marker
 import java.util.*
 
 /**
- * アクティビティの目的地となるマーカー一覧を管理する
+ * 施設クリックで追加される、手動チェックポイントを管理する
+ *
+ * TODO: 中身の修正
  */
-class MarkerList {
+class ManualCheckPoint {
     companion object {
         const val MAX_INDEX = 5
     }

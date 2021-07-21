@@ -44,12 +44,7 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         val myMap = MyMap(mMap)
         place = Place()
         directions = Directions()
-
-        // TODO: MyMap()、getMyMap()を使用している箇所の修正
-        val option = MarkerOptions()
-        option.position(LatLng(35.1709, 136.8815))
         MyApplication.setMap(myMap)
-        MyApplication.getMap().addMarker(option)
     }
 
     /**
@@ -118,8 +113,6 @@ class MapApplicationService(private val activity: AppCompatActivity) {
     }
 
     fun handleMarkerClick(marker: Marker) {
-        // TODO: MarkerListクラスのリファクタリング
-        // TODO: アラートの検討
         MyApplication.getMap().deleteMarker(marker)
     }
 }
