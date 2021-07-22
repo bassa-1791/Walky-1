@@ -42,6 +42,12 @@ class ManualCheckPoint {
         return flag
     }
 
+    /**
+     * 手動チェックポイントの削除を行う
+     * 判断はMarkerのタイトルで行う
+     *
+     * @param marker
+     */
     fun delete(marker: Marker) {
         val title = marker.title
         for (i in 0 until  list.size) {
