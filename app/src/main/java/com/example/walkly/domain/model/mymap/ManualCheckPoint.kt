@@ -4,9 +4,11 @@ import com.google.android.gms.maps.model.Marker
 import java.util.*
 
 /**
- * アクティビティの目的地となるマーカー一覧を管理する
+ * 施設クリックで追加される、手動チェックポイントを管理する
+ *
+ * TODO: 中身の修正
  */
-class MarkerList {
+class ManualCheckPoint {
     companion object {
         const val MAX_INDEX = 5
     }
@@ -40,6 +42,12 @@ class MarkerList {
         return flag
     }
 
+    /**
+     * 手動チェックポイントの削除を行う
+     * 判断はMarkerのタイトルで行う
+     *
+     * @param marker
+     */
     fun delete(marker: Marker) {
         val title = marker.title
         for (i in 0 until  list.size) {
