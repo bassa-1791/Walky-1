@@ -5,8 +5,8 @@ package com.example.walkly.domain.model.user
  */
 class Age(age: Int) {
     companion object {
-        const val MIN_VALUE = 0
-        const val MAX_VALUE = 120
+        const val MIN_VALUE = 7
+        const val MAX_VALUE = 100
     }
     private val value: Int = age
 

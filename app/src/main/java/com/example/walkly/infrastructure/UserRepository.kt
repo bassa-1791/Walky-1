@@ -2,24 +2,28 @@ package com.example.walkly.infrastructure
 
 import android.app.Activity
 import android.content.ContentValues.TAG
+import android.text.TextUtils
 import android.util.Log
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import com.example.walkly.domain.model.MyApplication
-import com.example.walkly.domain.model.User
+import android.widget.Button
+import android.widget.EditText
+import com.example.walkly.R
+import com.example.walkly.domain.model.user.User
 import com.example.walkly.domain.repository.IUserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 
 class UserRepository: IUserRepository {
-    private val auth: FirebaseAuth = Firebase.auth
+    lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
 
     override fun signUp(activity: Activity, user: User) {
-        auth.createUserWithEmailAndPassword("example2@Gmail.com", "password")
+        auth = FirebaseAuth.getInstance()
+
+
+
+        auth.createUserWithEmailAndPassword(user.getEmail(),user.getPassword())
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
@@ -27,9 +31,9 @@ class UserRepository: IUserRepository {
                     val currentUser = auth.currentUser
 
                     val user = hashMapOf(
-                        "user_name" to "のび太",
-                        "age" to 10,
-                        "gender" to 1
+                        "user_name" to user.getUserName(),
+                        "age" to user.getAge(),
+                        "gender" to user.getGender()
 
                     )
                     db.collection("users")

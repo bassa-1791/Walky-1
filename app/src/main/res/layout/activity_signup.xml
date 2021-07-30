@@ -19,12 +19,14 @@
             android:id="@+id/signup_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            >
+            android:background="#00BCD4">
+
             <TextView
                 android:id="@+id/signup_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="SIGN UP">
+                android:text="SIGN UP"
+                android:textColor="#FFFFFF">
 
             </TextView>
 
@@ -53,7 +55,7 @@
 
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInputEditText"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"/>
@@ -80,7 +82,7 @@
 
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_mail1"
+            android:id="@+id/mail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"/>
@@ -107,16 +109,16 @@
 
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_pass1"
+            android:id="@+id/pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"/>
+            android:inputType="textPassword"/>
 
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_pass2"
+        android:id="@+id/text_pass1"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -134,10 +136,10 @@
 
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_pass3"
+            android:id="@+id/pass2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"/>
+            android:inputType="textPassword"/>
 
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -151,19 +153,18 @@
         android:layout_marginTop="472dp"
         android:layout_marginEnd="32dp"
         android:hint="Age"
-        app:helperText="必須"
 
+        app:helperText="必須"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_age1"
+            android:id="@+id/age"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"/>
+            android:inputType="number" />
 
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -175,6 +176,7 @@
         android:layout_marginStart="160dp"
         android:layout_marginTop="664dp"
         android:layout_marginEnd="160dp"
+        android:backgroundTint="#00BCD4"
         android:text="Sign Up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
