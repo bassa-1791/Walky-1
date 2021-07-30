@@ -40,26 +40,26 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
 
-        val name: EditText = findViewById<EditText>(R.id.name)
-        val mail: EditText = findViewById<EditText>(R.id.mail)
-        val pass: EditText = findViewById<EditText>(R.id.pass)
-        val pass2: EditText = findViewById<EditText>(R.id.pass2)
-        val age: EditText = findViewById<EditText>(R.id.age)
+        val username: EditText = findViewById<EditText>(R.id.name)
+        val mailaddress: EditText = findViewById<EditText>(R.id.mail)
+        val password: EditText = findViewById<EditText>(R.id.pass)
+        val password2: EditText = findViewById<EditText>(R.id.pass2)
+        val userage: EditText = findViewById<EditText>(R.id.age)
         val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
 
 
-        val n1 = name.text.toString()
-        val m1 = mail.text.toString()
-        val p1 = pass.text.toString()
-        val p2 = pass2.text.toString()
-        val a1: Int
-        if (age.text.toString() == "") {
-            a1 = 20
+        val name = username.text.toString()
+        val mail = mailaddress.text.toString()
+        val pass = password.text.toString()
+        val pass2 = password2.text.toString()
+        val age: Int
+        if (userage.text.toString() == "") {
+            age = 20
         } else {
-            a1 = Integer.parseInt(age.text.toString())
+            age = Integer.parseInt(userage.text.toString())
         }
 
-        var g1 = 3
+        var gender = 3
         val checkedId = radioGroup.checkedRadioButtonId
 
         if (checkedId !== -1) {
@@ -70,10 +70,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             // ラジオボタンのテキストを取得
             val text = radioButton.text.toString()
             if (text=="Man"){
-                g1=1
+                gender=1
             }
             if (text=="Woman"){
-                g1=2
+                gender=2
             }
             Log.v("checked", text)
         } else {
@@ -83,7 +83,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
 
         try {
-            val user = User(n1, m1, p1, p2, a1, g1)
+            val user = User(name, mail, pass, pass2, age, gender)
             val repository: IUserRepository = UserRepository()
             repository.signUp(AppCompatActivity(), user)
         } catch (e: IllegalArgumentException) {
