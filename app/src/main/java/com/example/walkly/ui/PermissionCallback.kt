@@ -27,7 +27,9 @@ class PermissionCallback(private val activity: AppCompatActivity) {
             AlertDialog.Builder(activity)
                 .setTitle("警告")
                 .setMessage("一部機能が利用できません")
-                .setPositiveButton("OK") { _, _ -> }
+                .setPositiveButton("OK") { _, _ ->
+                    location.push(packageContext, MapsActivity::class.java)
+                }
                 .show()
         } else {
             location.push(packageContext, MapsActivity::class.java)
