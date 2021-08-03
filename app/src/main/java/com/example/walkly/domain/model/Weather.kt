@@ -16,7 +16,6 @@ import org.json.JSONObject
 import androidx.appcompat.app.AppCompatActivity
 import com.example.walkly.R
 
-
 class Weather(private val activity: AppCompatActivity) {
 
     public fun start(latLng: LatLng) {
