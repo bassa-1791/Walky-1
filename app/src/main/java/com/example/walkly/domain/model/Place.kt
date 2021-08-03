@@ -4,7 +4,7 @@ import com.android.volley.Response
 import com.example.walkly.BuildConfig
 import com.example.walkly.R
 import com.example.walkly.lib.HTTPRequest
-import com.google.android.gms.maps.GoogleMap
+import com.example.walkly.lib.MyApplication
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -18,7 +18,7 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * 周辺施設を取得する
  */
-class Place(private val mMap: GoogleMap) {
+class Place {
     companion object {
         const val PLACE_RADIUS = 2500
         const val MAX_CHECKPOINT = 5
@@ -29,7 +29,7 @@ class Place(private val mMap: GoogleMap) {
     private val places: MutableList<LatLng> = ArrayList()
 
     /**
-     * 周辺施設の位置情報を取得する
+     * 同期的に周辺施設の位置情報を取得する
      *
      * @param origin 現在地
      * @throws Exception APIキーが間違っているなどのエラー
@@ -68,7 +68,7 @@ class Place(private val mMap: GoogleMap) {
                             options.icon(
                                 BitmapDescriptorFactory.defaultMarker(160F)
                             )
-                            mMap.addMarker(options)
+                            MyApplication.getMap().addMarker(options)
                         }
                     }
                     continuation.resume(places)

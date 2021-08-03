@@ -12,7 +12,7 @@ import com.example.walkly.lib.Permission
  * @property permission パーミッション権限の確認を行うPermissionクラス
  */
 class PermissionCallback(private val activity: AppCompatActivity) {
-    private val permission: Permission = Permission(activity)
+    private val permission: Permission = Permission()
 
     /**
      * GPSの権限を拒否されたら警告文を表示
@@ -22,7 +22,7 @@ class PermissionCallback(private val activity: AppCompatActivity) {
             AlertDialog.Builder(activity)
                 .setTitle("警告")
                 .setMessage("一部機能が利用できません")
-                .setPositiveButton("OK") { dialog, which -> }
+                .setPositiveButton("OK") { _, _ -> }
                 .show()
         }
     }
