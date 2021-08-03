@@ -57,7 +57,9 @@ class Directions {
                 }
             }
 
-            val errorListener = Response.ErrorListener {}
+            val errorListener = Response.ErrorListener {
+//                throw Exception("接続が不安定です")
+            }
             HTTPRequest().getRequest(urlDirections, listener, errorListener)
         }
     }
