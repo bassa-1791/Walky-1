@@ -3,15 +3,14 @@ package com.example.walkly.application
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.walkly.domain.model.Directions
 import com.example.walkly.domain.model.GPS
 import com.example.walkly.domain.model.Place
-import com.example.walkly.domain.model.Directions
 import com.example.walkly.domain.model.mymap.MyMap
 import com.example.walkly.lib.MyApplication
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -80,8 +79,17 @@ class MapApplicationService(private val activity: AppCompatActivity) {
                 val location = gps.getCurrentLocation()
                 val origin = LatLng(location.latitude, location.longitude)
 
+                // TODO: 例外がキャッチできない
                 val places = place.pickCheckpoint(origin)
-                directions.drawRoute(origin, places)
+                if (places.size <= 0) {
+                    Toast.makeText(
+                        MyApplication.getContext(),
+                        "接続が不安定です。",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    directions.drawRoute(origin, places)
+                }
             } else {
                 MyApplication.getMap().clear()
                 previousTimeMillis = currentMillis

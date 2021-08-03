@@ -40,6 +40,7 @@ class Place {
             if (!BuildConfig.DEBUG || DEBUG_MODE) {
                 places.clear()
                 val url = createURL(origin)
+
                 val listener = Response.Listener<String> { response ->
                     val jsonResponse = JSONObject(response)
                     if (jsonResponse.getString("status") != "OK") {
@@ -73,7 +74,9 @@ class Place {
                     }
                     continuation.resume(places)
                 }
+
                 val errorListener = Response.ErrorListener {
+//                    throw Exception("接続が不安定です")
                     continuation.resume(places)
                 }
                 HTTPRequest().getRequest(url, listener, errorListener)
