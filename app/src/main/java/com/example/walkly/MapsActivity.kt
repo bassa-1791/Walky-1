@@ -24,10 +24,7 @@ class MapsActivity : AppCompatActivity() {
 
         val activityButton = findViewById<FloatingActionButton>(R.id.fab)
         activityButton.setOnClickListener {
-            // TODO: GPSを許可していない時にクリックされた時の処理
-            // TODO: どこにその処理を書くのかの検討。ApplicationService or MapsActivity
-            // TODO: このアクティビティの場合、拒否されたら遷移する必要がない
-
+            // TODO: 拒否状態(false)→パーミッション拒否の場合、遷移する必要がない
             val permission = Permission()
             if (permission.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 mapApplication.handleActivityButton()
