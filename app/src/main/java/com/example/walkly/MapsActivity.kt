@@ -1,6 +1,8 @@
 package com.example.walkly
 
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
 import com.example.walkly.application.MapApplicationService
 import com.example.walkly.ui.MapCallback

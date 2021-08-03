@@ -3,12 +3,13 @@
     package="com.example.walkly">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
+         Google Maps Android API v2, but you must specif    y either coarse or fine
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 追加 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 追加 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/><!-- #32追加 -->
     <application
         android:name=".lib.MyApplication"
         android:allowBackup="true"
@@ -43,8 +44,10 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
         </activity>
+
     </application>
 
 
 
 </manifest>
+
