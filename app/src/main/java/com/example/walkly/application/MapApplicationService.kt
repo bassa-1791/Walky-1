@@ -3,15 +3,15 @@ package com.example.walkly.application
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.walkly.domain.model.Directions
 import com.example.walkly.domain.model.GPS
 import com.example.walkly.domain.model.Place
-import com.example.walkly.domain.model.Directions
+import com.example.walkly.domain.model.Weather
 import com.example.walkly.domain.model.mymap.MyMap
 import com.example.walkly.lib.MyApplication
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +45,12 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         place = Place()
         directions = Directions()
         MyApplication.setMap(myMap)
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val location = gps.getCurrentLocation()
+            val origin = LatLng(location.latitude, location.longitude)
+            Weather(activity).getForecast(origin)
+        }
     }
 
     /**
