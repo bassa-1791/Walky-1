@@ -86,8 +86,17 @@ class MapApplicationService(private val activity: AppCompatActivity) {
                 val location = gps.getCurrentLocation()
                 val origin = LatLng(location.latitude, location.longitude)
 
+                // TODO: 例外がキャッチできない
                 val places = place.pickCheckpoint(origin)
-                directions.drawRoute(origin, places)
+                if (places.size <= 0) {
+                    Toast.makeText(
+                        MyApplication.getContext(),
+                        "接続が不安定です。",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    directions.drawRoute(origin, places)
+                }
             } else {
                 MyApplication.getMap().clear()
                 previousTimeMillis = currentMillis
