@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.walkly.domain.model.Directions
 import com.example.walkly.domain.model.GPS
 import com.example.walkly.domain.model.Place
+import com.example.walkly.domain.model.Weather
 import com.example.walkly.domain.model.mymap.MyMap
 import com.example.walkly.lib.MyApplication
 import com.google.android.gms.maps.GoogleMap
@@ -44,6 +45,12 @@ class MapApplicationService(private val activity: AppCompatActivity) {
         place = Place()
         directions = Directions()
         MyApplication.setMap(myMap)
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val location = gps.getCurrentLocation()
+            val origin = LatLng(location.latitude, location.longitude)
+            Weather(activity).getForecast(origin)
+        }
     }
 
     /**
