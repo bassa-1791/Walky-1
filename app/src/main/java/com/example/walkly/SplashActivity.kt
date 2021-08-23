@@ -1,9 +1,9 @@
 package com.example.walkly
 
 import android.Manifest
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.example.walkly.lib.Location
 import com.example.walkly.lib.Permission
 import com.example.walkly.ui.PermissionCallback
 import kotlinx.coroutines.CoroutineScope
@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashActivity : AppCompatActivity() {
-    private val permission: Permission = Permission(this)
+    private val permission: Permission = Permission()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,17 +21,20 @@ class SplashActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(2000)
             if (permission.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                val intent = Intent(this@SplashActivity, MapsActivity::class.java)
-                startActivity(intent)
-                finish()
+                val location = Location()
+                location.push(this@SplashActivity, MapsActivity::class.java)
             } else {
-                permission.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.integer.location_request_code)
+                permission.requestPermission(
+                    this@SplashActivity,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    R.integer.location_request_code
+                )
             }
         }
     }
 
     /**
-     * リクエストコードが1なら、GPSパーミッションのコールバックメソッドを実行する
+     * リクエストコードがR.integer.location_request_codeなら、GPSパーミッションのコールバックメソッドを実行する
      */
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -41,11 +44,7 @@ class SplashActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         val permissionCallback = PermissionCallback(this)
         if (requestCode == R.integer.location_request_code) {
-            permissionCallback.onLocationResultCallback()
+            permissionCallback.onLocationResultCallback(this@SplashActivity)
         }
-        val intent = Intent(this@SplashActivity, SignUpActivity::class.java)
-        startActivity(intent)
-        finish()
-
     }
 }

@@ -1,80 +1,122 @@
 package com.example.walkly.application
 
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.walkly.domain.model.Activity
+import com.example.walkly.domain.model.Directions
 import com.example.walkly.domain.model.GPS
+import com.example.walkly.domain.model.Place
+import com.example.walkly.domain.model.Weather
 import com.example.walkly.domain.model.mymap.MyMap
-import com.example.walkly.domain.model.mymap.Route
+import com.example.walkly.lib.MyApplication
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * 現在地の取得やアクティビティの開始などの指示を統括している
  */
 
 class MapApplicationService(private val activity: AppCompatActivity) {
-    private lateinit var myMap: MyMap
-    private lateinit var route: Route
-    private val mapActivity: Activity = Activity() // TODO: 名前
+    companion object {
+        const val ACTIVITY_INTERVAL = 60
+    }
+    private var previousTimeMillis: Long = 0
+    private var isActivity: Boolean = false
+    private var isProcess: Boolean = false
+    private lateinit var directions: Directions
+    private lateinit var gps: GPS
+    private lateinit var place: Place
+
     /**
      * マップの準備ができたら現在地を取得し、GoogleMapを保管する
      *
      * @param mMap OnMapReadyCallbackインターフェースのonMapReadyが受け取る引数
      */
     fun startUp(mMap: GoogleMap) {
-        val gps = GPS(activity)
+        gps = GPS(activity)
         gps.enableCurrentLocation(mMap)
-        myMap = MyMap(mMap)
-        route = Route(mMap)
 
+        val myMap = MyMap(mMap)
+        place = Place()
+        directions = Directions()
+        MyApplication.setMap(myMap)
 
+        CoroutineScope(Dispatchers.Main).launch {
+            val location = gps.getCurrentLocation()
+            val origin = LatLng(location.latitude, location.longitude)
+            Weather(activity).getForecast(origin)
+        }
     }
 
     /**
      * アクティビティの開始
      */
     fun handleActivityButton() {
-        // TODO: 現在地を取得する
-        // TODO: チェックポイントの位置を取得する
-        mapActivity.toggleIsActivity()
-        val mMap = myMap.getMyMap()
-        if (mapActivity.getIsActivity()) {
-            val origin = LatLng(35.1681, 136.8856) // HAL
+        if (isProcess) {
+            AlertDialog.Builder(activity)
+                .setTitle("処理中")
+                .setMessage("しばらくお待ちください。")
+                .setPositiveButton("OK") { _, _ -> }
+                .show()
+            return
+        }
+        val currentMillis = System.currentTimeMillis()
+        val timeDiff = (currentMillis - previousTimeMillis) / 1000L
+        if (!isActivity && timeDiff <= ACTIVITY_INTERVAL) {
+            /**
+             * アクティビティ中ではない(アクティビティを開始しようとしている) かつ 前回のアクティビティからN秒以内
+             */
+            AlertDialog.Builder(activity)
+                .setTitle("適度に休憩を")
+                .setMessage("適度に休憩しましょう。")
+                .setPositiveButton("OK") { _, _ -> }
+                .show()
+            return
+        }
+        isProcess = true
+        isActivity = !isActivity
 
-            val place: MutableList<LatLng> = ArrayList()
-            place.add(LatLng(35.1709, 136.8815)) // 名古屋駅
-            place.add(LatLng(35.1700, 136.8852)) // ミッドランド
-            place.add(LatLng(35.1716, 136.8863)) // ユニモール
+        CoroutineScope(Dispatchers.Main).launch {
+            if (isActivity) {
+                val location = gps.getCurrentLocation()
+                val origin = LatLng(location.latitude, location.longitude)
 
-            mMap.addMarker(MarkerOptions().position(origin))
-            for (j in 0 until place.size) {
-                mMap.addMarker(MarkerOptions().position(place[j]))
+                // TODO: 例外がキャッチできない
+                val places = place.pickCheckpoint(origin)
+                if (places.size <= 0) {
+                    Toast.makeText(
+                        MyApplication.getContext(),
+                        "接続が不安定です。",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    directions.drawRoute(origin, places)
+                }
+            } else {
+                MyApplication.getMap().clear()
+                previousTimeMillis = currentMillis
             }
-
-            route.drawRoute(origin, place)
-        } else {
-            mMap.clear()
+            isProcess = false
         }
     }
 
     /**
-     * アクティビティを実行中ならマーカーを設置して、保存する(削除やルート用)
+     * アクティビティを実行中ならマーカーを設置して、保存する(削除用)
      * そうでなければ情報ウインドウを設置する
      *
      * @param point
      */
     fun handlePointClick(point: PointOfInterest) {
-
-        // TODO: アクティビティ中ならtrue
-        if (true) {
-            myMap.addMarker(point)
+        if (isActivity) {
+            MyApplication.getMap().addMarker(point)
         } else {
             Toast.makeText(
-                activity,
+                MyApplication.getContext(),
                 """
             ${point.name}
             緯度:${point.latLng.latitude}
@@ -86,5 +128,6 @@ class MapApplicationService(private val activity: AppCompatActivity) {
     }
 
     fun handleMarkerClick(marker: Marker) {
+        MyApplication.getMap().deleteMarker(marker)
     }
 }

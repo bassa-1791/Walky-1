@@ -1,17 +1,23 @@
-package com.example.walkly.domain.model.mymap
+package com.example.walkly.domain.model
 
 import android.graphics.Color
 import com.android.volley.Response
+import com.example.walkly.BuildConfig
 import com.example.walkly.R
-import com.example.walkly.domain.model.MyApplication
 import com.example.walkly.lib.HTTPRequest
-import com.google.android.gms.maps.GoogleMap
+import com.example.walkly.lib.MyApplication
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.PolyUtil
 import org.json.JSONObject
 
-class Route(private val mMap: GoogleMap) {
+/**
+ * 現在地からチェックポイントまでの経路を引く
+ */
+class Directions {
+    companion object {
+        const val DEBUG_MODE = true // TODO: 本番時には消す
+    }
 
     /**
      * 経路を引く
@@ -21,46 +27,41 @@ class Route(private val mMap: GoogleMap) {
      * @throws Exception APIキーが間違っているなどのエラー
      */
     fun drawRoute(origin: LatLng, place: MutableList<LatLng>) {
-
-        // TODO: 正式リリース時に消す
-        // TODO: debug push用
-        if (false) {
-
-            val path: MutableList<List<LatLng>> = ArrayList()
+        // TODO: 正式リリース時に消す & リリースビルド時にtrueになることを確認する
+        if (!BuildConfig.DEBUG || DEBUG_MODE) {
             val urlDirections = createURLDirections(origin, place)
 
             val listener = Response.Listener<String> { response ->
                 val jsonResponse = JSONObject(response)
-                try {
-                    val routes = jsonResponse.getJSONArray("routes")
-                    val legs = routes.getJSONObject(0).getJSONArray("legs")
-
-                    for (j in 0 until legs.length()) {
-
-                        val steps = legs.getJSONObject(j).getJSONArray("steps")
-                        for (i in 0 until steps.length()) {
-                            val points =
-                                steps.getJSONObject(i).getJSONObject("polyline")
-                                    .getString("points")
-                            path.add(PolyUtil.decode(points))
-                        }
-                        for (i in 0 until path.size) {
-                            mMap.addPolyline(
-                                PolylineOptions().addAll(path[i]).color(Color.BLUE)
-                            )
-                        }
-
-                    }
-
-                } catch (e: Exception) {
+                if (jsonResponse.getString("status") != "OK") {
                     throw Exception(jsonResponse.getString("error_message"))
+                }
+
+                val path: MutableList<List<LatLng>> = ArrayList()
+                val routes = jsonResponse.getJSONArray("routes")
+                val legs = routes.getJSONObject(0).getJSONArray("legs")
+
+                for (j in 0 until legs.length()) {
+                    val steps = legs.getJSONObject(j).getJSONArray("steps")
+                    for (i in 0 until steps.length()) {
+                        val points =
+                            steps.getJSONObject(i).getJSONObject("polyline")
+                                .getString("points")
+                        path.add(PolyUtil.decode(points))
+                    }
+                    for (i in 0 until path.size) {
+                        MyApplication.getMap().addPolyline(
+                            PolylineOptions().addAll(path[i]).color(Color.argb(100, 0, 0, 255))
+                        )
+                    }
                 }
             }
 
-            val errorListener = Response.ErrorListener {  }
+            val errorListener = Response.ErrorListener {
+//                throw Exception("接続が不安定です")
+            }
             HTTPRequest().getRequest(urlDirections, listener, errorListener)
         }
-
     }
 
     /**
@@ -86,7 +87,7 @@ class Route(private val mMap: GoogleMap) {
             for (i in 1 until size - 1) {
                 waypointsParam += "|${points[i].latitude},${points[i].longitude}"
             }
-             pointsParam += "${points[size - 1].latitude},${points[size - 1].longitude}${waypointsParam}"
+            pointsParam += "${points[size - 1].latitude},${points[size - 1].longitude}${waypointsParam}"
         }
 
         return "https://maps.googleapis.com/maps/api/directions/json?mode=walking&${originParam}${pointsParam}&key=${apiKey}"
