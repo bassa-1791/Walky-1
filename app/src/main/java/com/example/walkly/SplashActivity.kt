@@ -21,7 +21,7 @@ class SplashActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(2000)
             if (permission.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                val intent = Intent(this@SplashActivity, SignUpActivity::class.java)
+                val intent = Intent(this@SplashActivity, MapsActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
